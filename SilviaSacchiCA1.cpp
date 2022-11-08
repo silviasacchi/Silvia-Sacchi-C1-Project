@@ -17,7 +17,7 @@ struct bullets
 int main(){
     const int windowWidth {500}; //the window width is a constant integer because it does never change.
     const int windowHeight {500}; //the window height is a constant integer because it does never change.
-    int num_bullets {50};  //estaglishing array as integers for the number of bullets. 
+    int num_bullets {50};  //estaglishing array as integers for the number of bullets.
 
     InitWindow (windowWidth, windowHeight, "Space Invaders"); //Creating window using the e parameters created above.
     
@@ -54,7 +54,7 @@ int main(){
 
 
     SetTargetFPS (60); //setting up the number of frame per second.
-
+    
     //main loop
     while (!WindowShouldClose()) //while the window is open.
     {
@@ -78,8 +78,8 @@ int main(){
             {
                 if (!bullet[i].active && shootRate % 40 ==0) //if a certain bullet i is active and the shooting rate reminder of the division by 40 is 0;
                 {
-                    bullet[i].rect.x = spaceshipRec.x;
-                    bullet[i].rect.y = spaceshipRec.y + spaceshipRec.height/4;
+                    bullet[i].rect.x = spaceshipSpeed.x;
+                    bullet[i].rect.y = spaceshipSpeed.y + spaceshipRec.height/4;
                     bullet[i].active = true;
                     break; //exiting the loop despite we don't know how many iterations are needed in the loop.
                 }
@@ -98,6 +98,19 @@ int main(){
                 } 
             }
         }
+
+//moving the spaceship
+if (IsKeyDown (KEY_LEFT)) //is the left arrow is down.
+{
+    spaceshipSpeed.x -= 3; //the spaceship speed should decrease by 3.
+}
+if (IsKeyDown (KEY_RIGHT)) //if the right key is down.
+{
+    spaceshipSpeed.x += 3; //the spaceship speed should inclease by 3.
+}
+if (spaceshipRec.x < 0 || spaceshipRec.x > windowWidth - spaceshipRec.width) {
+    spaceshipSpeed.x = 0;
+}
 
         ClearBackground (WHITE); //clear the backgroung.
         EndDrawing(); //finish drawing.
