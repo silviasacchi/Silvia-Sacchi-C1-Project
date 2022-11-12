@@ -37,13 +37,13 @@ int main(){
 
     //creating rectangle for the spaceship
     Rectangle spaceshipRec; //ceating the spaceship rectangle.
-    Vector2 spaceshipSpeed; //creating the spaceship speed vector.
-    spaceshipRec.x = windowWidth/2; //setting up the spaceship rectangle position on the x axis.
-    spaceshipRec.y = windowHeight; //setting up the spaceship rectangle position on the y axis.
-    spaceshipRec.width = spaceship.width; //setting up the spaceship rectangle width.
-    spaceshipRec.height = spaceship.height; //setting up the spaceship rectangle height.
-    spaceshipSpeed.x = windowWidth/2 - spaceshipRec.width/2; //setting up the speed movement on the x axis.
-    spaceshipSpeed.y = windowHeight - spaceshipRec.height; //setting up the speed movemtn on the y axis.
+    Vector2 spaceshipPos; //creating the spaceship position vector.
+    spaceshipRec.x = windowWidth/2; //x coordinate of the texture in the rectangle.
+    spaceshipRec.y = windowHeight; //y coordinate of the texture in the rectangle.
+    spaceshipRec.width = spaceship.width; //spaceship rectangle width.
+    spaceshipRec.height = spaceship.height; //spaceship rectangle height.
+    spaceshipPos.x = windowWidth/2 - spaceshipRec.width/2; //position of the spaceship within the window on the x axis.
+    spaceshipPos.y = windowHeight - spaceshipRec.height; //position of the spaceship within the window on the y axis.
 
     //creating bullet rectangle using the bullets structure
     bullets bullet [num_bullets];
@@ -83,10 +83,6 @@ int main(){
     //main loop
     while (!WindowShouldClose()) //while the window is open.
     {
-        BeginDrawing(); //start drawing.
-
-        DrawTextureRec (spaceship, spaceshipRec, spaceshipSpeed, WHITE); //draw the rectangle for the spaceship.
-
         //for loop to draw the bullet rectangle for each and every bullet.
         for (int i = 0; i < num_bullets; i++)
         {
@@ -100,7 +96,7 @@ int main(){
             if (enemy[i].active) //if the enemy is active.
             {
                 enemy[i].rect.y += enemy[i].speed.y; //new position of enemy on the y axis is its old position plus its speed on the y axis.
-                //reset is the enemy crosses the boundary
+                //reset if the enemy crosses the boundary
                 if (enemy[i].rect.y > windowHeight) //i the enemy goes beyond the bottom od the window.
                 {
                     enemy[i].rect.x = GetRandomValue (0, windowWidth); //new enemy position on the x axis.
@@ -125,8 +121,8 @@ int main(){
             {
                 if (!bullet[i].active && shootRate % 40 ==0) //if a certain bullet i is active and the shooting rate remainder of the division by 40 is 0;
                 {
-                    bullet[i].rect.x = spaceshipSpeed.x; //the position of the bullet on the x axis is now equal to it's speed on the x axis.
-                    bullet[i].rect.y = spaceshipSpeed.y + spaceshipRec.height/4;  //the position on the bullet on the y axix is now equal tp its speed on the y axis plus its size divided by four.
+                    bullet[i].rect.x = spaceshipPos.x; //the position of the bullet on the x axis is now equal to it's speed on the x axis.
+                    bullet[i].rect.y = spaceshipPos.y + spaceshipRec.height/4;  //the position on the bullet on the y axix is now equal tp its speed on the y axis plus its size divided by four.
                     bullet[i].active = true; //the bullet is active.
                     break; //exiting the loop despite we don't know how many iterations are needed in the loop.
                 }
@@ -149,16 +145,25 @@ int main(){
 //moving the spaceship
 if (IsKeyDown (KEY_LEFT)) //is the left arrow is down.
 {
-    spaceshipSpeed.x -= 3; //the spaceship speed should decrease by 3.
+    spaceshipPos.x -= 3; //the spaceship speed should decrease by 3.
 }
 if (IsKeyDown (KEY_RIGHT)) //if the right key is down.
 {
-    spaceshipSpeed.x += 3; //the spaceship speed should inclease by 3.
-}
-if (spaceshipRec.x < 0 || spaceshipRec.x > windowWidth - spaceshipRec.width) { //if the spaceship position on the x axis is below 0 or greater than the window width minus the spaceship width.
-    spaceshipSpeed.x = 0; //the spaceship speed on the x axis is 0.
+    spaceshipPos.x += 3; //the spaceship speed should inclease by 3.
 }
 
+//making sure the spaceship cannot go outside of the window.
+if (spaceshipPos.x <= 0) //if the spaceship touches or goes below the window border of the left.
+{
+    spaceshipPos.x = 0; //the spaceship position on the x axis is 0.
+}
+if (spaceshipPos.x >= windowWidth - spaceshipRec.width) //if the spaceship touches or goes below the window border on the right.
+{
+    spaceshipPos.x = windowWidth - spaceshipRec.width; //the spaceship position on the x axis is the right window border.
+}
+
+        BeginDrawing(); //start drawing.
+        DrawTextureRec (spaceship, spaceshipRec, spaceshipPos, WHITE); //draw the rectangle for the spaceship.
         ClearBackground (WHITE); //clear the backgroung.
         EndDrawing(); //finish drawing.
     }
