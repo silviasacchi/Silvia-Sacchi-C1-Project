@@ -29,7 +29,8 @@ int main(){
     int num_bullets {50}; //estaglishing array as integers for the number of bullets.
     int shootRate {}; //setting up integer variable for the shooting rate. We put it at 0 for the moment.
     int num_enemies {30}; //esablishing array as integers for the number of enemies.
-    int activeEnemies {}; //setting up integer variable for the number of enemies active at a certain point in time. 
+    int activeEnemies {}; //setting up integer variable for the number of enemies active at a certain point in time.
+    const char backgroundText [] = "Space Invaders (kinda)"; //creating the text to show in the background of the window game. 
 
     InitWindow (windowWidth, windowHeight, "Space Invaders"); //Creating window using the e parameters created above.
     InitAudioDevice (); //Initialising the audio to allow music and sounds to play.
@@ -90,6 +91,7 @@ int main(){
     //main loop
     while (!WindowShouldClose()) //while the window is open.
     {
+        DrawText (backgroundText, 20, 50, 40, RED);
         UpdateMusicStream (music); //keep playing music in loop. Once it gets to the end of the file it starts back from the beginning.
         //for loop to draw the bullet rectangle for each and every bullet.
         for (int i = 0; i < num_bullets; i++)
