@@ -51,8 +51,8 @@ int main(){
     for (int i = 0; i < num_bullets; i++) //i represents a specific bullet i from i to 50, assuming an increased value for each loop iteration.
     {
         //the for loop will repeat each one of the following sptep 50 times
-        bullet[i].rect.height = 7;
-        bullet[i].rect.width = 7;
+        bullet[i].rect.height = 10;
+        bullet[i].rect.width = 8;
         bullet[i].color = GREEN;
         bullet[i].rect.x = (windowWidth/2) + (spaceshipRec.width/2) - (bullet[i].rect.width/2);
         bullet[i].rect.y = (windowHeight - spaceshipRec.height) - (bullet[i].rect.height);
@@ -87,7 +87,25 @@ int main(){
         for (int i = 0; i < num_bullets; i++)
         {
             if (bullet[i].active) //if a certaing bullet is between 1 and 50 is active.
-            DrawRectangleRec (bullet[i].rect, bullet[i].color); //drawing the bullet rectangle.
+            {
+                DrawRectangleRec (bullet[i].rect, bullet[i].color); //drawing the bullet rectangle.
+
+                //check collision between bullets and emenies
+                for (int j = 0; j < activeEnemies; j++)
+                {
+                    if (enemy[j].active) //if the enemy is active
+                    {
+                        if (CheckCollisionRecs (bullet[i].rect, enemy[j].rect)) //if there is a collision between the rectangle of a certain bullet and the one of a certain enemy.
+                        {
+                            bullet[i].active = false; //the bullet is not active.
+                            enemy[j].rect.x = GetRandomValue (windowWidth, windowHeight + 1000); //the enemy rectangle x positon is a random value between the window width and the window width + 1000.
+                            enemy[j].rect.y = GetRandomValue (0, windowHeight - enemy[j].rect.height); //the enemy rectangle y is a random value between 0 and he window height - he height of the enemy rectangle.
+                            shootRate = 0; //the shoot rate is 0.
+                        }
+                    }
+                }
+            }
+            
         }
 
         //for loop to make the enemies move
@@ -105,7 +123,7 @@ int main(){
             }
         }
 
-        //for loop to draw the enemy bullet for each and every enemy.
+        //for loop to draw the enemy rectangle for each and every enemy.
         for (int i = 0; i < activeEnemies; i++)
         {
             if (enemy[i].active) //if the enemy is active.
