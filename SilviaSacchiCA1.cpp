@@ -29,11 +29,18 @@ int main(){
     int num_bullets {50}; //estaglishing array as integers for the number of bullets.
     int shootRate {}; //setting up integer variable for the shooting rate. We put it at 0 for the moment.
     int num_enemies {30}; //esablishing array as integers for the number of enemies.
-    int activeEnemies {}; //setting up integer variable for the number of enemies active at a certain point in time.
+    int activeEnemies {}; //setting up integer variable for the number of enemies active at a certain point in time. 
 
     InitWindow (windowWidth, windowHeight, "Space Invaders"); //Creating window using the e parameters created above.
-    
+    InitAudioDevice (); //Initialising the audio to allow music and sounds to play.
+
     Texture2D spaceship = LoadTexture ("resources/spaceship.png"); //leading the png texture for the spaceship.
+
+    //Adding music and sound effects
+    Music music = LoadMusicStream ("resources/music.wav");
+    Sound ShootingSound = LoadSound ("resources/shooting.wav"); //loading shooting sound.
+    Sound collision = LoadSound ("resources/collision.wav");
+    PlayMusicStream (music);
 
     //creating rectangle for the spaceship
     Rectangle spaceshipRec; //ceating the spaceship rectangle.
@@ -64,7 +71,7 @@ int main(){
     //creating enemy rectangle using the enemies structure
     enemies enemy [num_enemies];
     //setting up the number of acie enemies.
-    activeEnemies = 6;
+    activeEnemies = 4;
     //using for loop so that I don't have to initialised all 30 enemies one by one.
     for (int i = 0; i < num_enemies; i++)
     {
@@ -83,6 +90,7 @@ int main(){
     //main loop
     while (!WindowShouldClose()) //while the window is open.
     {
+        UpdateMusicStream (music); //keep playing music in loop. Once it gets to the end of the file it starts back from the beginning.
         //for loop to draw the bullet rectangle for each and every bullet.
         for (int i = 0; i < num_bullets; i++)
         {
@@ -97,6 +105,7 @@ int main(){
                     {
                         if (CheckCollisionRecs (bullet[i].rect, enemy[j].rect)) //if there is a collision between the rectangle of a certain bullet and the one of a certain enemy.
                         {
+                            PlaySound (collision);
                             bullet[i].active = false; //the bullet is not active.
                             enemy[j].rect.x = GetRandomValue (windowWidth, windowHeight + 1000); //the enemy rectangle x positon is a random value between the window width and the window width + 1000.
                             enemy[j].rect.y = GetRandomValue (0, windowHeight - enemy[j].rect.height); //the enemy rectangle y is a random value between 0 and he window height - he height of the enemy rectangle.
@@ -117,13 +126,13 @@ int main(){
                 //reset if the enemy crosses the boundary
                 if (enemy[i].rect.y > windowHeight) //i the enemy goes beyond the bottom od the window.
                 {
-                    enemy[i].rect.x = GetRandomValue (0, windowWidth); //new enemy position on the x axis.
+                    enemy[i].rect.x = GetRandomValue (20, windowWidth - 40); //new enemy position on the x axis.
                     enemy[i].rect.y = GetRandomValue (-windowHeight, -20); //new enemy position on the y axis.
                 }
             }
         }
 
-        //for loop to draw the enemy rectangle for each and every enemy.
+        //for loop to draw the enemy rectangle for each and every enemy. 
         for (int i = 0; i < activeEnemies; i++)
         {
             if (enemy[i].active) //if the enemy is active.
@@ -139,6 +148,7 @@ int main(){
             {
                 if (!bullet[i].active && shootRate % 40 ==0) //if a certain bullet i is active and the shooting rate remainder of the division by 40 is 0;
                 {
+                    PlaySound (ShootingSound); //play the shooting sound.
                     bullet[i].rect.x = spaceshipPos.x; //the position of the bullet on the x axis is now equal to it's speed on the x axis.
                     bullet[i].rect.y = spaceshipPos.y + spaceshipRec.height/4;  //the position on the bullet on the y axix is now equal tp its speed on the y axis plus its size divided by four.
                     bullet[i].active = true; //the bullet is active.
@@ -186,6 +196,9 @@ if (spaceshipPos.x >= windowWidth - spaceshipRec.width) //if the spaceship touch
         EndDrawing(); //finish drawing.
     }
 UnloadTexture (spaceship); //unload the spaceship png texture (backend purposes).
+UnloadMusicStream (music); //unload the background music.
+UnloadSound (ShootingSound); //unload the shooting sound.
+UnloadSound (collision); //unload the collision sound.
 CloseWindow(); //close window (backend purposes).
 }
 
