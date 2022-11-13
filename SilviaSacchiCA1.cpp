@@ -203,6 +203,7 @@ UnloadTexture (spaceship); //unload the spaceship png texture (backend purposes)
 UnloadMusicStream (music); //unload the background music.
 UnloadSound (ShootingSound); //unload the shooting sound.
 UnloadSound (collision); //unload the collision sound.
+CloseAudioDevice(); //deactivating audio devices.
 CloseWindow(); //close window (backend purposes).
 }
 
